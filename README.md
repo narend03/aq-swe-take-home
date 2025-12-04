@@ -70,6 +70,28 @@ alembic upgrade head
 - `scripts/seed_data.py` loads a demo user + “Sum Two Numbers” problem for smoke testing.
 - `shared/types/` will eventually host generated API contracts for cross-stack safety.
 
+## Execution API
+
+- `POST /api/v1/execute` runs the submitted Python solution against every test case for the target problem.
+- Guardrails: stripped imports for `os`/`subprocess`, recursion limit enforced, per-run timeout (3s) and output cap (10k chars).
+- Response includes a summary plus per-test pass/fail details; hidden tests mask their input/output but still report status.
+
+Sample request:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/execute \
+  -H "Content-Type: application/json" \
+  -d '{"problem_id": 1, "code": "print(sum(map(int, input().split())))"}'
+```
+
+## Tests
+
+```bash
+cd aq-swe-take-home
+source backend/.venv/bin/activate
+PYTHONPATH=backend pytest backend/tests
+```
+
 ## Next Stages
 
 1. Implement execution sandbox & test harness.
