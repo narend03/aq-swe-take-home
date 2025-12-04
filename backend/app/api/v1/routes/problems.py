@@ -56,8 +56,22 @@ def update_problem(
     if not problem:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Problem not found")
 
-    for field, value in payload.model_dump(exclude_unset=True).items():
+    payload_data = payload.model_dump(exclude_unset=True)
+    test_cases_payload = payload_data.pop("test_cases", None)
+
+    for field, value in payload_data.items():
         setattr(problem, field, value)
+
+    if test_cases_payload is not None:
+        problem.test_cases.clear()
+        for test_case in test_cases_payload:
+            problem.test_cases.append(
+                TestCase(
+                    input_data=test_case.input_data,
+                    expected_output=test_case.expected_output,
+                    is_hidden=test_case.is_hidden,
+                )
+            )
 
     db.add(problem)
     db.commit()

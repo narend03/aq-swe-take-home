@@ -28,6 +28,7 @@ class ProblemUpdate(BaseModel):
     description: Optional[str] = None
     example_input: Optional[str] = None
     example_output: Optional[str] = None
+    test_cases: Optional[List[TestCaseCreate]] = None
 
 
 class ProblemRead(ProblemBase):

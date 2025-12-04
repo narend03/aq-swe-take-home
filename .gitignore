@@ -7,6 +7,10 @@ __pycache__/
 frontend/node_modules/
 frontend/dist/
 
+# Databases
+app.db
+backend/app.db
+
 # Env
 .env
 .env.local

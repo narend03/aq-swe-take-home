@@ -62,7 +62,19 @@ alembic upgrade head
 
 ## Frontend Structure
 
-`frontend/` currently contains the stock Vite React + TS template. Stage 2+ will introduce the actual UI, shared components, and API client bindings generated from backend schemas.
+`frontend/` hosts the React authoring UI (Vite + TS). Key areas:
+
+- `src/api/` – lightweight fetch client plus shared DTOs.
+- `src/App.tsx` – problem builder surface (form, test-case composer, Monaco editor, run-results table).
+- `src/App.css` – layout + component styling (no Tailwind needed yet).
+
+Set `VITE_API_BASE_URL` (defaults to `http://localhost:8000/api/v1`) if you expose the backend elsewhere. Start the UI with:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ## Scripts & Tooling
 
