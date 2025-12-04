@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: aq-code-platform-backend
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: docker/backend.Dockerfile
+    envVars:
+      - key: APP_NAME
+        value: "AQ Code Platform"
+      - key: API_V1_PREFIX
+        value: "/api/v1"
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: "https://your-frontend.netlify.app"

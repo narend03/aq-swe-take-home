@@ -1,0 +1,9 @@
+{
+  "name": "aq-root",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "test:e2e": "npm --prefix tests/e2e test",
+    "test:e2e:headed": "npm --prefix tests/e2e run test:headed"
+  }
+}
