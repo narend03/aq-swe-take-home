@@ -96,6 +96,13 @@ curl -X POST http://localhost:8000/api/v1/execute \
   -d '{"problem_id": 1, "code": "print(sum(map(int, input().split())))"}'
 ```
 
+## Submission Lifecycle
+
+- `POST /api/v1/submissions/{id}/submit` snapshots the current problem + tests, ties in the latest execution result, and creates/refreshes a pending review entry.
+- `GET /api/v1/submissions?submitter_name=alice&problem_id=1` returns versioned submissions (status chip, reviewer feedback, stdout/stderr logs, and the immutable test-case snapshot for that run).
+- Frontend surfaces this under **My Submissions** with filters per problem so authors can track pending/approved/rejected entries.
+- Reviewer workspace: enter a reviewer token (any string) to unlock the admin dashboard. Pending submissions are listed with search/status filters; clicking a row opens the detail view where reviewers can tweak the underlying problem test cases (via the existing editor), rerun the user’s code against those tests, and mark the submission approved/rejected with contextual feedback.
+
 ## Tests
 
 ```bash

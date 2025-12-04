@@ -1,4 +1,10 @@
-import type { ExecutionResponse, Problem, ProblemPayload } from './types'
+import type {
+  ExecutionResponse,
+  Problem,
+  ProblemPayload,
+  SubmissionDetail,
+  SubmissionItem,
+} from './types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api/v1'
 
@@ -37,9 +43,71 @@ export function updateProblem(problemId: number, payload: ProblemPayload): Promi
   })
 }
 
-export function runExecution(problemId: number, code: string): Promise<ExecutionResponse> {
+export function runExecution(
+  problemId: number,
+  code: string,
+  submitterName?: string | null,
+): Promise<ExecutionResponse> {
   return request<ExecutionResponse>('/execute/', {
     method: 'POST',
-    body: JSON.stringify({ problem_id: problemId, code }),
+    body: JSON.stringify({ problem_id: problemId, code, submitter_name: submitterName }),
+  })
+}
+
+export function submitForReview(
+  submissionId: number,
+  notes?: string,
+): Promise<SubmissionItem> {
+  return request<SubmissionItem>(`/submissions/${submissionId}/submit`, {
+    method: 'POST',
+    body: JSON.stringify({ notes }),
+  })
+}
+
+export function getSubmissions(params?: {
+  submitter_name?: string
+  problem_id?: number | null
+  status?: string | null
+  search?: string | null
+}): Promise<SubmissionItem[]> {
+  const searchParams = new URLSearchParams()
+  if (params?.submitter_name) {
+    searchParams.set('submitter_name', params.submitter_name)
+  }
+  if (params?.problem_id) {
+    searchParams.set('problem_id', String(params.problem_id))
+  }
+  if (params?.status) {
+    searchParams.set('status', params.status)
+  }
+  if (params?.search) {
+    searchParams.set('search', params.search)
+  }
+  const query = searchParams.toString()
+  const path = query ? `/submissions/?${query}` : '/submissions/'
+  return request<SubmissionItem[]>(path)
+}
+
+export function getSubmissionDetail(submissionId: number): Promise<SubmissionDetail> {
+  return request<SubmissionDetail>(`/submissions/${submissionId}`)
+}
+
+export function rerunSubmission(
+  submissionId: number,
+  payload: { code_override?: string | null } = {},
+): Promise<SubmissionItem> {
+  return request<SubmissionItem>(`/submissions/${submissionId}/rerun`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function reviewSubmission(
+  submissionId: number,
+  payload: { status: string; feedback?: string | null },
+): Promise<SubmissionItem> {
+  return request<SubmissionItem>(`/submissions/${submissionId}/review`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
   })
 }

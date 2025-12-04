@@ -54,13 +54,33 @@ class Submission(Base):
     author_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"), nullable=True)
     code: Mapped[str] = mapped_column(Text, nullable=False)
     language: Mapped[str] = mapped_column(String(32), default="python")
+    submitter_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    problem_title_snapshot: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    problem_description_snapshot: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    example_input_snapshot: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    example_output_snapshot: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    submitted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    latest_execution_result_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("execution_results.id"), nullable=True
+    )
 
     problem: Mapped[Problem] = relationship(back_populates="submissions")
     author: Mapped[Optional[User]] = relationship(back_populates="submissions")
     execution_results: Mapped[List["ExecutionResult"]] = relationship(
-        back_populates="submission", cascade="all, delete-orphan"
+        "ExecutionResult",
+        back_populates="submission",
+        cascade="all, delete-orphan",
+        foreign_keys="ExecutionResult.submission_id",
     )
     review: Mapped[Optional["Review"]] = relationship(back_populates="submission", uselist=False)
+    latest_execution_result: Mapped[Optional["ExecutionResult"]] = relationship(
+        "ExecutionResult",
+        foreign_keys=[latest_execution_result_id],
+        post_update=True,
+    )
+    test_case_snapshots: Mapped[List["SubmissionTestCaseSnapshot"]] = relationship(
+        back_populates="submission", cascade="all, delete-orphan", order_by="SubmissionTestCaseSnapshot.id"
+    )
 
 
 class ExecutionResult(Base):
@@ -75,7 +95,22 @@ class ExecutionResult(Base):
     runtime_ms: Mapped[Optional[int]] = mapped_column()
     run_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
 
-    submission: Mapped[Submission] = relationship(back_populates="execution_results")
+    submission: Mapped[Submission] = relationship(
+        back_populates="execution_results", foreign_keys=[submission_id]
+    )
+
+
+class SubmissionTestCaseSnapshot(Base):
+    __tablename__ = "submission_test_case_snapshots"
+
+    submission_id: Mapped[int] = mapped_column(
+        ForeignKey("submissions.id", ondelete="CASCADE"), nullable=False
+    )
+    input_data: Mapped[str] = mapped_column(Text, nullable=False)
+    expected_output: Mapped[str] = mapped_column(Text, nullable=False)
+    is_hidden: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    submission: Mapped[Submission] = relationship(back_populates="test_case_snapshots")
 
 
 class Review(Base):

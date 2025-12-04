@@ -1,5 +1,13 @@
 from app.models.base import Base
-from app.models.entities import ExecutionResult, Problem, Review, Submission, TestCase, User
+from app.models.entities import (
+    ExecutionResult,
+    Problem,
+    Review,
+    Submission,
+    SubmissionTestCaseSnapshot,
+    TestCase,
+    User,
+)
 
 __all__ = [
     "Base",
@@ -7,6 +15,7 @@ __all__ = [
     "Problem",
     "Review",
     "Submission",
+    "SubmissionTestCaseSnapshot",
     "TestCase",
     "User",
 ]

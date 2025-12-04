@@ -69,6 +69,7 @@ def execute_solution(
         problem_id=problem.id,
         code=payload.code,
         language=payload.language,
+        submitter_name=payload.submitter_name,
     )
     db.add(submission)
     db.flush()
@@ -83,6 +84,8 @@ def execute_solution(
         runtime_ms=sum(result.runtime_ms for result in case_results),
     )
     db.add(execution_record)
+    db.flush()
+    submission.latest_execution_result_id = execution_record.id
     db.commit()
 
     summary = ExecutionSummary(status=status_label, passed_count=passed_count, failed_count=failed_count)

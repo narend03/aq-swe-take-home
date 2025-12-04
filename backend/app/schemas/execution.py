@@ -9,6 +9,9 @@ class ExecutionRequest(BaseModel):
     problem_id: int
     code: str = Field(min_length=1)
     language: str = Field(default="python", description="Programming language identifier")
+    submitter_name: Optional[str] = Field(
+        default=None, description="Optional identifier for the user running the code"
+    )
 
 
 class ExecutionTestCaseResult(BaseModel):

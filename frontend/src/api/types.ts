@@ -50,3 +50,37 @@ export interface ExecutionResponse {
   summary: ExecutionSummary
   results: ExecutionTestCaseResult[]
 }
+
+export interface SubmissionTestCaseSnapshot {
+  id: number
+  input_data: string
+  expected_output: string
+  is_hidden: boolean
+}
+
+export interface SubmissionReviewInfo {
+  status: string
+  feedback?: string | null
+}
+
+export interface SubmissionItem {
+  id: number
+  problem_id: number
+  problem_title: string
+  submitter_name?: string | null
+  submitted_at?: string | null
+  review: SubmissionReviewInfo
+  execution_summary: ExecutionSummary
+  stdout?: string | null
+  stderr?: string | null
+  test_cases: SubmissionTestCaseSnapshot[]
+  code: string
+  problem_description_snapshot?: string | null
+  example_input_snapshot?: string | null
+  example_output_snapshot?: string | null
+}
+
+export interface SubmissionDetail extends SubmissionItem {
+  current_problem: Problem
+  current_test_cases: TestCase[]
+}
