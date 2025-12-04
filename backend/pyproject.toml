@@ -1,0 +1,24 @@
+[project]
+name = "aq-code-platform"
+version = "0.1.0"
+description = "Code execution and review platform backend"
+authors = [{ name = "AfterQuery Candidate" }]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.115.4",
+    "uvicorn[standard]==0.32.0",
+    "SQLAlchemy==2.0.36",
+    "alembic==1.14.0",
+    "psycopg2-binary==2.9.10",
+    "pydantic-settings==2.6.1",
+    "python-dotenv==1.0.1",
+    "ruff==0.7.1",
+    "mypy==1.13.0"
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = "double"

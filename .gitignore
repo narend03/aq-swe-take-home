@@ -1,0 +1,20 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Env
+.env
+.env.local
+
+# Editor
+.vscode/
+.DS_Store
+.idea/
+
+# Alembic
+backend/alembic/*.pyc

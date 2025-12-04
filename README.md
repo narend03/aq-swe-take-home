@@ -1,21 +1,80 @@
-# Welcome to Candidate Code
+# Code Execution Platform
 
-This README file has been created by the Candidate Code platform.
+Lightweight platform where users author coding challenges, write solutions, and run them against curated test cases before submitting for review. Reviewers can inspect runs, tweak hidden cases, and approve/reject entries.
 
-Before you send this challenge to a real candidate, you'll want to either change or remove this file and add your own challenge's code. 
+## Stack Overview
 
-### If you've been sent this as part of an assignment
+| Layer     | Tech                                                    |
+|-----------|---------------------------------------------------------|
+| Frontend  | Vite + React 18 + TypeScript + Tailwind (soon)          |
+| Backend   | FastAPI, SQLAlchemy 2.0, Alembic, Pydantic Settings     |
+| Database  | PostgreSQL 15 (SQLite fallback for local dev)           |
+| Infra     | Docker Compose (db, backend API, React dev server)      |
 
-* It's likely your team is testing us out for the first time
-* You have cloned this from a repository created specially for this assignment
-* Try committing and pushing some changes to this file (or adding others)
-* The person that sent you this will able to see any changes in a diff on the assignment page in Candidate Code
-* They can also comment, adding ratings, etc. from that page
-* After you've finished, Ask them to invite you to the team so can see the results too
+## Getting Started
 
-### If you've cloned this repository from the challenge page
+1. **Clone & install**
+   ```bash
+   git clone <repo>
+   cd aq-swe-take-home
+   python3 -m venv backend/.venv && source backend/.venv/bin/activate
+   pip install -r backend/requirements.txt
+   cd frontend && npm install
+   ```
 
-* This repository **acts as a template for the coding challenges** you send to candidates.
-* The `master` branch of this repository becomes the **starting point** for a candidate's code challenge
-* When a challenge is later assigned to a candidate **a new, separate repository will be created** for them to work in
-* The history of the template repository will **not be visible** to a candidate. They will only see one `Initial Commit` created from the master branch of the template.
+2. **Environment**
+   ```bash
+   cp .env.example .env
+   ```
+   Adjust `DATABASE_URL` if you are not using Docker for Postgres.
+
+3. **Run services (dev)**
+   ```bash
+   docker compose up --build
+   ```
+   - API ➜ http://localhost:8000/docs
+   - React dev server ➜ http://localhost:5173
+
+4. **Seed sample data**
+   ```bash
+   source backend/.venv/bin/activate
+   python scripts/seed_data.py
+   ```
+
+## Backend Structure
+
+```
+backend/
+  app/
+    api/v1/routes        # FastAPI routers
+    core                 # settings/config
+    db                   # session helpers
+    models               # SQLAlchemy models
+    schemas              # Pydantic schemas
+```
+
+Alembic configuration lives under `backend/alembic`. Run migrations with:
+
+```bash
+cd backend
+alembic upgrade head
+```
+
+## Frontend Structure
+
+`frontend/` currently contains the stock Vite React + TS template. Stage 2+ will introduce the actual UI, shared components, and API client bindings generated from backend schemas.
+
+## Scripts & Tooling
+
+- `Makefile` offers shortcuts such as `make run-backend`, `make seed-data`, and `make docker-up`.
+- `scripts/seed_data.py` loads a demo user + “Sum Two Numbers” problem for smoke testing.
+- `shared/types/` will eventually host generated API contracts for cross-stack safety.
+
+## Next Stages
+
+1. Implement execution sandbox & test harness.
+2. Build problem authoring UI/flows.
+3. Wire submission lifecycle + reviewer dashboard.
+4. Deploy to public cloud target.
+
+See project board / instructions for the stretch goals ordering (multi-language, fuzzing, version history, terminal box).
