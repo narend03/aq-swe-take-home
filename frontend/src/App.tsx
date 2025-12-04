@@ -599,9 +599,6 @@ function ReviewerWorkspace({ refreshUserSubmissions }: { refreshUserSubmissions:
   useEffect(() => {
     if (reviewerMode && token.trim()) {
       localStorage.setItem(reviewerStorageKey, token.trim())
-    } else if (!reviewerMode) {
-      localStorage.removeItem(reviewerStorageKey)
-      setSelectedSubmissionId(null)
     }
   }, [reviewerMode, token])
 
@@ -661,7 +658,11 @@ function ReviewerWorkspace({ refreshUserSubmissions }: { refreshUserSubmissions:
       setReviewerMode(false)
       setToken('')
       setMessage('')
+      setSelectedSubmissionId(null)
+      localStorage.removeItem(reviewerStorageKey)
     } else if (token.trim()) {
+      const trimmed = token.trim()
+      setToken(trimmed)
       setReviewerMode(true)
       setMessage('')
     } else {
